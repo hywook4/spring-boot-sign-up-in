@@ -17,6 +17,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// MySql connector
+	implementation 'mysql:mysql-connector-java:8.0.19'
+
+	// lombok
+	implementation 'org.projectlombok:lombok:1.18.22'
+
 }
 
 test {
