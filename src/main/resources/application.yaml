@@ -13,4 +13,9 @@ spring:
     port: 6379
 
 
+sms:
+  code:
+    timeout: 5
 
+  token:
+    timeout: 30
