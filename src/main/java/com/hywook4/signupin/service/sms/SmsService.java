@@ -3,13 +3,20 @@ package com.hywook4.signupin.service.sms;
 import com.hywook4.signupin.repository.RedisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.UUID;
 
 @Service
 public class SmsService {
 
     @Value("${sms.code.timeout}")
-    private int ttl;
+    private int codeTtl;
+
+    @Value("${sms.token.timeout}")
+    private int tokenTtl;
 
     private final RedisRepository redisRepository;
 
@@ -25,16 +32,32 @@ public class SmsService {
 
         // if name, phoneNumber is not valid, throw exception and return error
         // else store the code to redis with key that consist of name and phone number.
-        String key = makeVerficationCodeKey(name, phoneNumber);
+        String verificationCodekey = makeVerficationCodeKey(name, phoneNumber);
 
-        redisRepository.insertKeyValue(key, verificationCode, ttl);
+        redisRepository.insertKeyValue(verificationCodekey, verificationCode, codeTtl);
     }
 
+    public String verifyCodeAndReturnToken(String name, String phonNumber, String verificationCode) {
+        String verificationCodeKey = makeVerficationCodeKey(name, phonNumber);
+
+        if(!redisRepository.getValueByKey(verificationCodeKey).equals(verificationCode)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid verification code value");
+        }
+
+        String smsVerifiedTokenKey = makeSmsVerifiedTokenKey(name, phonNumber);
+        String smsVerifiedToken = makeSmsVerifiedToken();
+
+        redisRepository.insertKeyValue(smsVerifiedTokenKey, smsVerifiedToken, tokenTtl);
+
+        return smsVerifiedToken;
+    }
+
+    // Utils
+    //
 
     private String makeVerficationCodeKey(String name, String phoneNumber) {
         return name + ":" + phoneNumber + ":" + "code";
     }
-
 
     private final char[] num = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
@@ -46,5 +69,13 @@ public class SmsService {
             stringBuilder.append(num[(int) Math.floor(Math.random() * 10)]);
 
         return stringBuilder.toString();
+    }
+
+    private String makeSmsVerifiedTokenKey(String name, String phoneNumber) {
+        return name + ":" + phoneNumber + ":" + "token";
+    }
+
+    private String makeSmsVerifiedToken() {
+        return UUID.randomUUID().toString();
     }
 }
