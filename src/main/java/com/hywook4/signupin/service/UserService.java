@@ -1,10 +1,9 @@
-package com.hywook4.signupin.service.user;
+package com.hywook4.signupin.service;
 
 import com.hywook4.signupin.controller.users.dto.*;
 import com.hywook4.signupin.repository.RedisRepository;
 import com.hywook4.signupin.repository.UserRepository;
 import com.hywook4.signupin.repository.dao.User;
-import com.hywook4.signupin.service.token.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

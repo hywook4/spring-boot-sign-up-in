@@ -1,4 +1,4 @@
-package com.hywook4.signupin.service.token;
+package com.hywook4.signupin.service;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

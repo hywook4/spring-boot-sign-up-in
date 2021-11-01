@@ -2,7 +2,7 @@ package com.hywook4.signupin.controller.users;
 
 
 import com.hywook4.signupin.controller.users.dto.*;
-import com.hywook4.signupin.service.user.UserService;
+import com.hywook4.signupin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

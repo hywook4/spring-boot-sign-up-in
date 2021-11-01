@@ -1,4 +1,4 @@
-package com.hywook4.signupin.service.sms;
+package com.hywook4.signupin.service;
 
 import com.hywook4.signupin.repository.RedisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
