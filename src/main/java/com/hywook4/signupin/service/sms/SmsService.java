@@ -40,7 +40,9 @@ public class SmsService {
     public String verifyCodeAndReturnToken(String name, String phonNumber, String verificationCode) {
         // verify code
         String verificationCodeKey = makeVerficationCodeKey(name, phonNumber);
-        if(!redisRepository.getValueByKey(verificationCodeKey).equals(verificationCode)){
+        String returnedValue = redisRepository.getValueByKey(verificationCodeKey);
+
+        if(returnedValue == null || !returnedValue.equals(verificationCode)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid verification code value");
         }
 

@@ -48,8 +48,10 @@ public class UserService {
     public UserSignInResponseDto signInUser(String idField, String idValue, String password){
         User user = null;
         // Find row with matching field + value
-        if(idField.equals("email") || idField.equals("phone_number")){
+        if(idField.equals("email")){
             user = userRepository.getUserByEmail(idValue);
+        } else if (idField.equals("phone_number")) {
+            user = userRepository.getUserByPhoneNumber(idValue);
         } else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only email or phone_number field is possible");
         }
