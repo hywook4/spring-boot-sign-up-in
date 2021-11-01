@@ -59,6 +59,8 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No user with such email or phone_number");
         }
 
+        // TODO: If available, use encrypt and decrypt to password
+
         // Validate password
         if (!user.getPassword().equals(password)){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Wrong password");
@@ -111,8 +113,9 @@ public class UserService {
 
     private void validateSmsVerifiedToken(String smsVerifiedToken, String name, String phoneNumber) {
         String smsVerifiedTokenValue = makeSmsVerifiedTokenValue(name, phoneNumber);
+        String returnedValue = redisRepository.getValueByKey(smsVerifiedToken);
 
-        if (!redisRepository.getValueByKey(smsVerifiedToken).equals(smsVerifiedTokenValue)) {
+        if (returnedValue == null || !returnedValue.equals(smsVerifiedTokenValue)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid SMS verified token");
         }
     }

@@ -50,7 +50,7 @@ public class UserRepository {
     }
 
     public boolean updatePasswordByNameAndPhoneNumber(String password, String name, String phoneNumber) {
-        String sql = "UPDATE user SET password=? WHERE name = ?, phone_number = ?";
+        String sql = "UPDATE user SET password = ? WHERE name = ? AND phone_number = ?";
         int result = jdbcTemplate.update(sql, password, name, phoneNumber);
 
         return result == 1;
