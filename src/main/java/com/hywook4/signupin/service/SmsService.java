@@ -25,7 +25,7 @@ public class SmsService {
         this.redisRepository = redisRepository;
     }
 
-    public void storeSmsVerificationCode(String name, String phoneNumber) {
+    public String storeSmsVerificationCode(String name, String phoneNumber) {
         // String verificationCode =  sendSmsVerificationCode(name, phoneNumber);
         // since no SMS service is required, create random verification code.
         String verificationCode = makeVerificationCode();
@@ -35,6 +35,8 @@ public class SmsService {
         String verificationCodekey = makeVerficationCodeKey(name, phoneNumber);
 
         redisRepository.insertKeyValue(verificationCodekey, verificationCode, codeTtl);
+
+        return verificationCode;
     }
 
     public String verifyCodeAndReturnToken(String name, String phonNumber, String verificationCode) {

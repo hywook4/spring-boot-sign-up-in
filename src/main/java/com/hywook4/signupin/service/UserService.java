@@ -81,7 +81,10 @@ public class UserService {
         // Validate Token
         validateSmsVerifiedToken(smsVerifiedToken, userChangePasswordDto.getName(), userChangePasswordDto.getPhoneNumber());
 
-        // TODO: Validate password
+        // Validate password
+        validatePassword(userChangePasswordDto.getPassword());
+
+        // TODO: If possible, add encryption to password
 
         // Change password
         if (!userRepository.updatePasswordByNameAndPhoneNumber(userChangePasswordDto.getPassword(), userChangePasswordDto.getName(), userChangePasswordDto.getPhoneNumber())) {

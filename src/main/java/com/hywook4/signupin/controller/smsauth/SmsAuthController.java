@@ -5,6 +5,7 @@ import com.hywook4.signupin.controller.smsauth.dto.VerifySmsAuthDto;
 import com.hywook4.signupin.controller.smsauth.dto.VerifySmsAuthResponseDto;
 import com.hywook4.signupin.service.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sms-auth")
 public class SmsAuthController {
 
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+
+
     private final SmsService smsService;
 
     @Autowired
@@ -22,8 +27,9 @@ public class SmsAuthController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public void requestSmsAuth(@RequestBody RequestSmsAuthDto requestSmsAuthDto) {
-        smsService.storeSmsVerificationCode(requestSmsAuthDto.getName(), requestSmsAuthDto.getPhoneNumber());
+    public String requestSmsAuth(@RequestBody RequestSmsAuthDto requestSmsAuthDto) {
+        String verificationCode = smsService.storeSmsVerificationCode(requestSmsAuthDto.getName(), requestSmsAuthDto.getPhoneNumber());
+        return activeProfile.equals("local") ? verificationCode : "";
     }
 
     @RequestMapping(value = "/verify", method = RequestMethod.POST)
