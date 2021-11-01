@@ -38,16 +38,21 @@ public class SmsService {
     }
 
     public String verifyCodeAndReturnToken(String name, String phonNumber, String verificationCode) {
+        // verify code
         String verificationCodeKey = makeVerficationCodeKey(name, phonNumber);
-
         if(!redisRepository.getValueByKey(verificationCodeKey).equals(verificationCode)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid verification code value");
         }
 
-        String smsVerifiedTokenKey = makeSmsVerifiedTokenKey(name, phonNumber);
-        String smsVerifiedToken = makeSmsVerifiedToken();
+        // delete verified code
+        redisRepository.deleteValueByKey(verificationCodeKey);
 
-        redisRepository.insertKeyValue(smsVerifiedTokenKey, smsVerifiedToken, tokenTtl);
+        // create, store and return the token
+        // Key - token, Value - user info
+        String smsVerifiedToken = makeSmsVerifiedToken();
+        String smsVerifiedTokenValue = makeSmsVerifiedTokenValue(name, phonNumber);
+
+        redisRepository.insertKeyValue(smsVerifiedToken, smsVerifiedTokenValue, tokenTtl);
 
         return smsVerifiedToken;
     }
@@ -71,7 +76,7 @@ public class SmsService {
         return stringBuilder.toString();
     }
 
-    private String makeSmsVerifiedTokenKey(String name, String phoneNumber) {
+    private String makeSmsVerifiedTokenValue(String name, String phoneNumber) {
         return name + ":" + phoneNumber + ":" + "token";
     }
 

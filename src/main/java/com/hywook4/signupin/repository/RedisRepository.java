@@ -26,4 +26,8 @@ public class RedisRepository {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         return valueOperations.get(key);
     }
+
+    public void deleteValueByKey(String key) {
+        redisTemplate.delete(key);
+    }
 }
