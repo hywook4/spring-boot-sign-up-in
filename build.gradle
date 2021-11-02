@@ -30,6 +30,9 @@ dependencies {
 
 	// h2
 	implementation 'com.h2database:h2'
+
+	// bcrypt
+	implementation 'org.mindrot:jbcrypt:0.3m'
 }
 
 test {

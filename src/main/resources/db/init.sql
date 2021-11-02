@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS user (
     `nickname` CHAR(20) NOT NULL,
     `name` CHAR(10) NOT NULL,
     `phone_number` CHAR(15) NOT NULL,
-    `password` CHAR(25) NOT NULL,
+    `password` CHAR(100) NOT NULL,
     `token` CHAR(50) NOT NULL,
     PRIMARY KEY(`id`),
     UNIQUE KEY(`email`),

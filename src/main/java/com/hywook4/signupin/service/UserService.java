@@ -7,6 +7,7 @@ import com.hywook4.signupin.controller.users.dto.UserSignUpDto;
 import com.hywook4.signupin.repository.RedisRepository;
 import com.hywook4.signupin.repository.UserRepository;
 import com.hywook4.signupin.repository.dao.User;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,11 +36,10 @@ public class UserService {
         // Validate sign-up data
         validateUserSignUpInfo(userSignUpDto);
 
-        // TODO: If there's time, decryt encryted password with secret key
-
         // Create idToken and save user data to DB
         String idToken = tokenService.makeIdToken();
-        User user = new User(userSignUpDto.getEmail(), userSignUpDto.getNickname(), userSignUpDto.getName(), userSignUpDto.getPhoneNumber(), userSignUpDto.getPassword(), idToken);
+        User user = new User(userSignUpDto.getEmail(), userSignUpDto.getNickname(), userSignUpDto.getName(),
+                userSignUpDto.getPhoneNumber(), hashPassword(userSignUpDto.getPassword()), idToken);
 
         if (!userRepository.save(user)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to insert user");
@@ -67,10 +67,8 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No user with such email or phone_number");
         }
 
-        // TODO: If available, use encrypt and decrypt to password
-
         // Validate password
-        if (!user.getPassword().equals(password)) {
+        if (!matchesPassword(password, user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Wrong password");
         }
 
@@ -84,10 +82,11 @@ public class UserService {
         // Validate password
         validatePassword(userChangePasswordDto.getPassword());
 
-        // TODO: If possible, add encryption to password
+        // Hash password
+        String hashedPassword = hashPassword(userChangePasswordDto.getPassword());
 
         // Change password
-        if (!userRepository.updatePasswordByNameAndPhoneNumber(userChangePasswordDto.getPassword(), userChangePasswordDto.getName(), userChangePasswordDto.getPhoneNumber())) {
+        if (!userRepository.updatePasswordByNameAndPhoneNumber(hashedPassword, userChangePasswordDto.getName(), userChangePasswordDto.getPhoneNumber())) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update password");
         }
 
@@ -148,7 +147,7 @@ public class UserService {
         String regex = "^(.+)@(.+)$";
         Pattern pattern = Pattern.compile(regex);
 
-        if(!pattern.matcher(email).matches()){
+        if (!pattern.matcher(email).matches()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email pattern");
         }
     }
@@ -157,7 +156,7 @@ public class UserService {
         String regex = "^[A-Za-z]+$";
         Pattern pattern = Pattern.compile(regex);
 
-        if(!pattern.matcher(nickname).matches()){
+        if (!pattern.matcher(nickname).matches()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nickname must consist of alphabets only");
         }
     }
@@ -166,26 +165,34 @@ public class UserService {
         String regex = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$";
         Pattern pattern = Pattern.compile(regex);
 
-        if(!pattern.matcher(name).matches()){
+        if (!pattern.matcher(name).matches()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid name pattern");
         }
     }
 
-    private void validatePhoneNumber(String phoneNumber){
+    private void validatePhoneNumber(String phoneNumber) {
         String regex = "^[0-9]*$";
         Pattern pattern = Pattern.compile(regex);
 
-        if(!pattern.matcher(phoneNumber).matches()){
+        if (!pattern.matcher(phoneNumber).matches()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Phone number must consist of numbers only");
         }
     }
 
-    private void validatePassword(String password){
+    private void validatePassword(String password) {
         String regex = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
         Pattern pattern = Pattern.compile(regex);
 
-        if(!pattern.matcher(password).matches()){
+        if (!pattern.matcher(password).matches()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be longer than 8 and consist of at least one letter and one number");
         }
+    }
+
+    private String hashPassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    private boolean matchesPassword(String plainPassword, String hasedPassword){
+        return BCrypt.checkpw(plainPassword, hasedPassword);
     }
 }
