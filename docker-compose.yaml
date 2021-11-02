@@ -1,5 +1,20 @@
 version: '3.7'
 services:
+  app:
+    image: sign-up-in:0.0.1
+    container_name: app
+    ports:
+      - 10001:10001
+    environment:
+      - SPRING_PROFILE=local
+    volumes:
+      - ./data/h2:/data/h2
+    links:
+      - redis
+    networks:
+      - local_network
+
+
   redis:
     image: redis:alpine
     command: redis-server --port 6379
@@ -7,4 +22,9 @@ services:
     hostname: redis_container
     ports:
       - 6379:6379
+    networks:
+      - local_network
+
+networks:
+  local_network:
 
