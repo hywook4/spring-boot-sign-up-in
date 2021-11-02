@@ -1,7 +1,7 @@
 # Sign-up-in
 ---
 ## Steps to run on local
-1. Build the Java application 
+~~1. Build the Java application~~  (Added built file for users who can't build on local)
 ```
 ./gradlew clean build
 ```
