@@ -22,6 +22,9 @@ docker-compose up
 
 4. Test whether it works on localhost (127.0.0.1:10001)
 
+***FYI***
+***Doesn't support Korean due to data verification logics.***
+
 ### Extras
 #### How to use Redis terminal on local
 ```
