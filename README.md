@@ -115,7 +115,7 @@ Verify the SMS verificationCode
 | ---- | ----- | -------- |
 |name      |string      |O        |
 |phoneNumber      |string       |O          |
-|verificationCode      |int       |O          |
+|verificationCode      |string       |O          |
 
 
 #### Success Response
