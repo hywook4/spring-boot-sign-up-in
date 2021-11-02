@@ -9,6 +9,7 @@ import com.hywook4.signupin.repository.UserRepository;
 import com.hywook4.signupin.repository.dao.User;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -54,13 +55,18 @@ public class UserService {
     public UserSignInResponseDto signInUser(String idField, String idValue, String password) {
         User user = null;
         // Find row with matching field + value
-        if (idField.equals("email")) {
-            user = userRepository.getUserByEmail(idValue);
-        } else if (idField.equals("phone_number")) {
-            user = userRepository.getUserByPhoneNumber(idValue);
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only email or phone_number field is possible");
+        try {
+            if (idField.equals("email")) {
+                user = userRepository.getUserByEmail(idValue);
+            } else if (idField.equals("phone_number")) {
+                user = userRepository.getUserByPhoneNumber(idValue);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only email or phone_number field is possible");
+            }
+        } catch (EmptyResultDataAccessException e){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No user with such email or phone_number");
         }
+
 
         // Validate user
         if (user == null) {
