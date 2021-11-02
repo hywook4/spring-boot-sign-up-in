@@ -157,7 +157,7 @@ Request for sign-in
 #### Body Parameters
 | KEY  | VALUE | REQUIRED |
 | ---- | ----- | -------- |
-|idField      |string      |O        |
+|idField      |string("email" or "phone_number"      |O        |
 |idValue      |string       |O          |
 |password      |string       |O          |
 
@@ -178,7 +178,7 @@ Content:
 ---
 
 ### GET - /users/my-info
-Request for sign-in
+Request for my info
 
 
 #### Header
