@@ -20,7 +20,7 @@ docker-compose up -d
 docker-compose up
 ```
 
-4. Test whether it works on localhost (127.0.0.1:10001)
+4. Test to see if the server is running well on local (127.0.0.1:10001)
 
 ***FYI***
 ***Doesn't support Korean due to data verification logics.***
