@@ -20,6 +20,53 @@ docker-compose up -d
 docker-compose up
 ```
 
+4. Test whether it works on localhost (127.0.0.1:10001)
+
+### Extras
+#### How to use Redis terminal on local
+```
+docker exec -it redis redis-cli
+```
+
+#### How to get access to database on local
+You can go to http://127.0.0.1:10001/h2-console and login with below informations
+```
+Setting Name: Generic H2 (Embedded)
+JDBC URL: jdbc:h2:file:./data/h2/dev
+User Name: user
+Password: user
+```
+
+#### How to reset the database on local
+When running on local, the service will use H2 and store the data at "./data/h2" path.
+Delete the data in the directory and you can clean up the database.
+
+
+## Architecture (Flow)
+![architecture](architecture.png "architecture")
+
+
+## Features
+### 기능 요구사항
+- 회원가입 기능: O
+- 전화번호 인증 후 회원가입 + 비밀번호 재설정 기능: O
+- 로그인 기능: O (이메일과 핸드폰 번호를 이용하여 로그인 가능)
+- 내 정보 보기 기능: O
+- 비밀번호 재설정 기능: O
+
+### 추가 구현 기능 및 소개할 점
+- 비밀번호 복호화
+- 데이터 검사
+- Stateless한 서버로 scale out이 가능한 구조 (Redis, JWT Token 등 활용)
+- 컨테이너화
+
+
+## Used skills
+- Java Spring Boot
+- Redis
+- Mysql (H2 for local)
+- Docker
+
 
 ## APIs
 
