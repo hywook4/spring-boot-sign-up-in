@@ -71,7 +71,7 @@ Delete the data in the directory and you can clean up the database.
 - Docker
 
 
-## APIs
+## APIs - (Endpoint is 127.0.0.1:10001 when running on local)
 
 ### POST - /sms-auth
 Request for SMS authentication
